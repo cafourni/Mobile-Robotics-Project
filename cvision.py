@@ -36,13 +36,15 @@ def upper_lower_color(color_sample, c):
     upper_color = mean + c*stddev
     return lower_color, upper_color
 
-def find_contours(frame, color,c):
+# Given a frame, give the contour of all pixels in the image of a particular color.
+def find_contours(frame, color, c):
     lower_b, upper_b = upper_lower_color(color, c)
     # Find contours in the binary mask
     mask = cv2.inRange(frame, lower_b, upper_b)
     contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     return contours
 
+# Class Obj defining all the objects to be recognized with the camera.
 class Obj:
     def __init__(self, color_obj, min_size_obj, color_tolerance = 2, img_pos = np.array([[]])):
         self.color_obj = color_obj
@@ -90,7 +92,7 @@ class Obj:
                     cv2.rectangle(frame, (x, y), (x + w, y + h), color, 2)
         return
 
-        
+# Class Map define a map given three references objects and their respective distances. This map can be used to localize other objects given a frame of the actual view.
 class Map:
     def __init__(self, ref1, ref2, ref3, distance_r1r2 = 400, distance_r3r2 = 400):
         self.ref1 = ref1
