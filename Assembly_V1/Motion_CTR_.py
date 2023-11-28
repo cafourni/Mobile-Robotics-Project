@@ -45,6 +45,15 @@ def convert_velocity2vw(vr, vl,C_conv_toThymio_right, C_conv_toThymio_left, L, R
     return v, w
 
 ############################################################################################################################################
+def convert_velocity2RL(v,w,C_conv_toThymio_right, C_conv_toThymio_left,L,R):
+    # convert v in mm/s and w in rad/s to right and left wheel velocities in Thymio units
+    vr_rads= (2*v+w*L)/(2*R)
+    vl_rads= (2*v-w*L)/(2*R)
+    vr=vr_rads*C_conv_toThymio_right
+    vl=vl_rads*C_conv_toThymio_left
+    return vr, vl
+    
+############################################################################################################################################
 def getB(yaw, deltak):
     B = np.array([[np.cos(yaw) * deltak, 0],
                   [np.sin(yaw) * deltak, 0],
