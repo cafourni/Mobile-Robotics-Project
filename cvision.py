@@ -92,7 +92,8 @@ class Obj:
                     cv2.rectangle(frame, (x, y), (x + w, y + h), color, 2)
         return
 
-# Class Map define a map given three references objects and their respective distances. This map can be used to localize other objects given a frame of the actual view.
+# Class Map define a map given three references objects and their respective distances. 
+# This map can be used to localize other objects given a frame of the actual view.
 class Map:
     def __init__(self, ref1, ref2, ref3, distance_r1r2 = 400, distance_r3r2 = 400):
         self.ref1 = ref1
@@ -161,9 +162,9 @@ class Map:
             map_pos.append(self.loc_img2map(frame, img_coordinates[o]))
         return np.array(map_pos)
     
-    def matrix(self, frame, objects, robot, goal, refs):
+    def matrix(self, frame, objects, robot, goal):
         # Print the map in a matrix format with the given objects represented as numbers
-        square_size = 20 #[mm]
+        square_size = 40 #[mm]
         margins = 0
         origin = np.array([margins, margins])
         matrix = np.zeros([2*margins+self.distance_r1r2//square_size,2*margins+self.distance_r1r2//square_size])
@@ -233,7 +234,7 @@ class Map:
                 mat_pos = origin + np.round(np.multiply(map_pos, np.divide(self.scale,square_size))).astype(int)
                 if mat_pos[0] > 0 and mat_pos[1] > 0 and mat_pos[0] < np.size(matrix,0) and mat_pos[1] < np.size(matrix,1):
                     matrix[mat_pos[0],mat_pos[1]] = 3
-        # Write the ref positions in the matrix with a 4
+        """# Write the ref positions in the matrix with a 4
         for o in range(len(refs)):
             map_pos = self.localize(frame,refs[o])
             for p in range(np.size(map_pos,0)):
@@ -241,7 +242,7 @@ class Map:
                     if not(np.isnan(map_pos[p]).any()):
                         mat_pos = origin + np.round(np.multiply(map_pos[p], np.divide(self.scale,square_size))).astype(int)
                         if mat_pos[0] > 0 and mat_pos[1] > 0 and mat_pos[0] < np.size(matrix,0) and mat_pos[1] < np.size(matrix,1):
-                            matrix[mat_pos[0],mat_pos[1]] = 4
+                            matrix[mat_pos[0],mat_pos[1]] = 4 """
         return matrix
 
 
@@ -294,4 +295,3 @@ class Robot:
                 x,y,w,h = self.boundingRect[0]
                 cv2.rectangle(frame, (x, y), (x + w, y + h), color, 2)
         return
-
