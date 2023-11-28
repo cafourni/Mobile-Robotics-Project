@@ -7,6 +7,7 @@ from IPython.display import display, clear_output
 import time
 import math
 
+# Find the USB camera connected to the PC
 def find_camera_index(i):
     cap = cv2.Videocapture(i)
     if cap.isOpened():
@@ -17,14 +18,17 @@ def find_camera_index(i):
         print(f"No camera found at index {i}.")
         return find_camera_index(i+1)
 
+#
 def show_frame(frame):
     _, img_encoded = cv2.imencode('.png', frame)
     IPython.display.display(IPython.display.Image(data=img_encoded.tobytes()))
 
+#
 def vector_to_angle(vector):
     angle = math.atan2(vector[1], vector[0])
     return angle
 
+# Define the upper and lower RGB color limit of a given image 
 def upper_lower_color(color_sample, c):
     # Define the upper and lower limit of the color given the sample image 
     mean, stddev = cv2.meanStdDev(color_sample)
