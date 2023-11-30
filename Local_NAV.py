@@ -9,6 +9,9 @@ speed_L_R = [0,0]
 obstSpeedGain =  [1, 3, -15, -6, -2] #version le cours
 speed0 = 100
 
+
+############################################################################################################################################
+
 def update_state(state,obst,client):
     if state == 0: #State = 0 -> Global path
         if (obst[0] > obstThrH):
@@ -30,7 +33,7 @@ def update_state(state,obst,client):
                             state = 0
     return state
     
-    
+############################################################################################################################################    
 def local_navigation(obst):
     global spLeft, spRight, speed_L_R, obstSpeedGain,speed0
     spLeft = speed0
@@ -41,33 +44,12 @@ def local_navigation(obst):
     speed_L_R = [spLeft,spRight]
     return speed_L_R
 
-def motors(left, right):
-    return {
-        "motor.left.target": [left],
-        "motor.right.target": [right],
-    }
+############################################################################################################################################
 
-def stop_motors(node):
-    aw(node.set_variables(motors(0,0)))
-    
 def read_prox_sensors(node,client):
     aw(node.wait_for_variables({"prox.horizontal"}))
     aw(client.sleep(0.01))
     prox=node.v.prox.horizontal
     return prox
 
-def set_motors(left,right,node):
-    aw(node.set_variables(motors(left,right)))
-    
-def read_motors_speed(node,client):
-    aw(node.wait_for_variables({"motor.left.speed","motor.right.speed"}))
-    aw(client.sleep(0.01))
-    speed=[node.v.motor.left.speed, node.v.motor.right.speed]
-    return speed
-
-def global_path():
-    global speed0
-    speedL = speed0
-    speedR = speed0
-    speed_glob = [speedL,speedR]
-    return speed_glob
+############################################################################################################################################

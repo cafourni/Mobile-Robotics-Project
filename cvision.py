@@ -95,7 +95,7 @@ class Obj:
 # Class Map define a map given three references objects and their respective distances. 
 # This map can be used to localize other objects given a frame of the actual view.
 class Map:
-    def __init__(self, ref1, ref2, ref3, distance_r1r2 = 400, distance_r3r2 = 400):
+    def __init__(self, ref1, ref2, ref3, distance_r1r2 = 1000, distance_r3r2 = 1000):
         self.ref1 = ref1
         self.ref1_pos = np.array([1, 0])
         self.ref2 = ref2
@@ -164,7 +164,7 @@ class Map:
     
     def matrix(self, frame, objects, robot, goal):
         # Print the map in a matrix format with the given objects represented as numbers
-        square_size = 40 #[mm]
+        square_size = 10 #[mm]
         margins = 0
         origin = np.array([margins, margins])
         matrix = np.zeros([2*margins+self.distance_r1r2//square_size,2*margins+self.distance_r1r2//square_size])
