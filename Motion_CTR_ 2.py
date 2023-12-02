@@ -1,6 +1,7 @@
 #This file is to the motion control of the robot when he's in the global path
 import numpy as np
 import math
+from tdmclient import ClientAsync, aw
 
 
 #Conversion coefficients from Thymio to radians per second
@@ -8,6 +9,8 @@ C_conv_toThymio_right = 67.60908181
 C_conv_toThymio_left = 67.82946137
 
 threshold_for_convergence = 50 #mm
+L = 104 #[mm]
+R = 20 #[mm]
            
 ############################################################################################################################################
 
@@ -26,7 +29,12 @@ def stop_motors(node):
 
 def set_motors(left,right,node):
     aw(node.set_variables(motors(left,right)))
-    
+    """ d = {
+                    "motor.left.target": [left],
+                    "motor.right.target": [right],
+                }
+    aw(node.set_variable(d)) """
+
 ############################################################################################################################################
 
 def read_motors_speed(node,client):
@@ -59,6 +67,8 @@ def getB(yaw, deltak):
                   [np.sin(yaw) * deltak, 0],
                   [0, deltak]])
     return B
+
+
 
 ############################################################################################################################################
 def control_law(state_estimate_k, x_goal, y_goal, theta_goal,  constant_speed = 100, Kp_alpha = 2 , Kp_beta = -0.5):
