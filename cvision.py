@@ -95,7 +95,7 @@ class Obj:
 # Class Map define a map given three references objects and their respective distances. 
 # This map can be used to localize other objects given a frame of the actual view.
 class Map:
-    def __init__(self, ref1, ref2, ref3, distance_r1r2 = 1000, distance_r3r2 = 1000):
+    def __init__(self, ref1, ref2, ref3, distance_r1r2 = 650, distance_r3r2 = 600):
         self.ref1 = ref1
         self.ref1_pos = np.array([1, 0])
         self.ref2 = ref2
@@ -122,6 +122,7 @@ class Map:
                 return np.array([])
             else:
                 map_coordinates = np.linalg.solve(np.transpose(basis), img_coordinates-r2_img_pos)
+                map_coordinates = np.multiply(map_coordinates, self.scale)
                 return map_coordinates
         else:
             return np.array([])
@@ -139,12 +140,14 @@ class Map:
                 return np.array([])
             else:
                 map_coordinates = np.linalg.solve(np.transpose(basis), img_coordinates)
+                map_coordinates = np.multiply(map_coordinates, self.scale)
                 return map_coordinates
         else:
             return np.array([])
     
     def loc_map2img(self, frame, map_coordinates):
         if np.size(map_coordinates) > 1:
+            map_coordinates = np.divide(map_coordinates, self.scale)
             r1_img_pos = self.ref1.get_img_pos(frame)[0]
             r2_img_pos = self.ref2.get_img_pos(frame)[0]
             r3_img_pos = self.ref3.get_img_pos(frame)[0]
@@ -164,7 +167,7 @@ class Map:
     
     def matrix(self, frame, objects, robot, goal):
         # Print the map in a matrix format with the given objects represented as numbers
-        square_size = 10 #[mm]
+        square_size = 50 #[mm]
         margins = 0
         origin = np.array([margins, margins])
         matrix = np.zeros([2*margins+self.distance_r1r2//square_size,2*margins+self.distance_r1r2//square_size])
@@ -174,7 +177,7 @@ class Map:
             for p in range(np.size(map_pos,0)):
                 if np.size(map_pos[p]) > 0:
                     if not(np.isnan(map_pos[p]).any()):
-                        mat_pos = origin + np.round(np.multiply(map_pos[p], np.divide(self.scale,square_size))).astype(int)
+                        mat_pos = origin + np.round(np.divide(map_pos[p],square_size)).astype(int)
                         if mat_pos[0] > 0 and mat_pos[1] > 0 and mat_pos[0] < np.size(matrix,0) and mat_pos[1] < np.size(matrix,1):
                             matrix[mat_pos[0],mat_pos[1]] = 1
                         if np.size(objects[o].boundingRect[p]) > 0:
@@ -224,14 +227,14 @@ class Map:
         map_pos = self.localize(frame,robot)[0]
         if np.size(map_pos) > 0:
             if not(np.isnan(map_pos).any()):
-                mat_pos = origin + np.round(np.multiply(map_pos, np.divide(self.scale,square_size))).astype(int)
+                mat_pos = origin + np.round(np.divide(map_pos,square_size)).astype(int)
                 if mat_pos[0] > 0 and mat_pos[1] > 0 and mat_pos[0] < np.size(matrix,0) and mat_pos[1] < np.size(matrix,1):
                     matrix[mat_pos[0],mat_pos[1]] = 2
         # Write the goal position in the matrix with a 3
         map_pos = self.localize(frame,goal)[0]
         if np.size(map_pos) > 0:
             if not(np.isnan(map_pos).any()):
-                mat_pos = origin + np.round(np.multiply(map_pos, np.divide(self.scale,square_size))).astype(int)
+                mat_pos = origin + np.round(np.divide(map_pos,square_size)).astype(int)
                 if mat_pos[0] > 0 and mat_pos[1] > 0 and mat_pos[0] < np.size(matrix,0) and mat_pos[1] < np.size(matrix,1):
                     matrix[mat_pos[0],mat_pos[1]] = 3
         """# Write the ref positions in the matrix with a 4
@@ -240,7 +243,7 @@ class Map:
             for p in range(np.size(map_pos,0)):
                 if np.size(map_pos[p]) > 0:
                     if not(np.isnan(map_pos[p]).any()):
-                        mat_pos = origin + np.round(np.multiply(map_pos[p], np.divide(self.scale,square_size))).astype(int)
+                        mat_pos = origin + np.round(np.divide(map_pos,square_size)).astype(int)
                         if mat_pos[0] > 0 and mat_pos[1] > 0 and mat_pos[0] < np.size(matrix,0) and mat_pos[1] < np.size(matrix,1):
                             matrix[mat_pos[0],mat_pos[1]] = 4 """
         return matrix
