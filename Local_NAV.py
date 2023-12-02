@@ -1,7 +1,7 @@
 from tdmclient import ClientAsync, aw
 
-obstThrL = 100      
-obstThrH = 200
+obstThrL = 1000      
+obstThrH = 2000
 spRight = 0
 spLeft = 0
 speed_L_R = [0,0]
@@ -13,24 +13,25 @@ speed0 = 100
 ############################################################################################################################################
 
 def update_state(state,obst,client):
-    if state == 0: #State = 0 -> Global path
+    if state == 1: #State = 0 -> Global path
         if (obst[0] > obstThrH):
-            state = 1
+            state = 2
         if (obst[1] > obstThrH):
-            state = 1
+            state = 2
         if (obst[2] > obstThrH):
-            state = 1
+            state = 2
         if (obst[3] > obstThrH):
-            state = 1
+            state = 2
         if (obst[4] > obstThrH):
-            state = 1
-    elif state == 1: #State = 1 -> Normal local navigation -> obstacles pop far from the thymio -> normal avoidance
+            state = 2
+    elif state == 2: #State = 1 -> Normal local navigation -> obstacles pop far from the thymio -> normal avoidance
         if obst[0] < obstThrL:
             if obst[1] < obstThrL:
                 if obst[2] < obstThrL:
                     if obst[3] < obstThrL:
                         if obst[4] < obstThrL:
-                            state = 0
+                            state = 1
+    print("THE STATE IS : ", state)
     return state
     
 ############################################################################################################################################    

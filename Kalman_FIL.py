@@ -19,9 +19,9 @@ H_k = np.array([[1.0, 0, 0],
                 [0, 0, 1.0]])
 
 # Sensor measurement noise covariance matrix R_k
-R_k= np.array([[0.1, 0, 0],
-               [0, 0.1, 0],
-               [0, 0, 0.00001]]) #TO BE CHANGED AFTER MEASUREMENTS
+R_k= np.array([[0.01, 0, 0],
+               [0, 0.01, 0],
+               [0, 0, 0.01]]) #TO BE CHANGED AFTER MEASUREMENTS
 
 # Sensor noise
 sensor_noise_w_k = np.array([0, 0, 0]) #zero mean noise
@@ -49,7 +49,7 @@ def ekf(z_k_observation_vector, state_estimate_k_minus_1,
     state_estimate_k_priori = A_k_minus_1 @ state_estimate_k_minus_1 + \
                               getB(state_estimate_k_minus_1[2], dk) @ control_vector_k_minus_1 + \
                               process_noise_v_k_minus_1
-    state_estimate_k_priori[2] = np.mod(state_estimate_k_priori[2], 2*np.pi)    
+    state_estimate_k_priori[2] = state_estimate_k_priori[2]% (2*np.pi )
              
     # Predict state covariance
     P_k = A_k_minus_1 @ P_k_minus_1 @ A_k_minus_1.T + Q_k

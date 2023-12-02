@@ -69,28 +69,27 @@ def getB(yaw, deltak):
     return B
 
 ############################################################################################################################################
-def control_law(state_estimate_k, x_goal, y_goal,  constant_speed = 100, Kp_alpha = 2):
+def control_law(state_estimate_k, x_goal, y_goal,  constant_speed = 30, Kp_alpha = 0.8):
 
-     """
-     -->alpha is the angle to the goal relative to the heading of the robot
-     -->beta is the angle between the robot's position and the goal position plus the goal angle
-     -->Kp_rho*rho and Kp_alpha*alpha drive the robot along a line towards the goal
-     -->Kp_beta*beta rotates the line so that it is parallel to the goal angle
-    
-     """
-     x = state_estimate_k[0]
-     y = state_estimate_k[1]
-     theta = state_estimate_k[2]
+    """
+    -->alpha is the angle to the goal relative to the heading of the robot
+    -->beta is the angle between the robot's position and the goal position plus the goal angle
+    -->Kp_rho*rho and Kp_alpha*alpha drive the robot along a line towards the goal
+    -->Kp_beta*beta rotates the line so that it is parallel to the goal angle
 
-     x_diff = x_goal - x
-     y_diff = y_goal - y
+    """
+    x = state_estimate_k[0]
+    y = state_estimate_k[1]
+    theta = state_estimate_k[2]
 
-     alpha = (math.atan2(y_diff, x_diff) - theta + math.pi) % (2 * math.pi) - math.pi
+    x_diff = x_goal - x
+    y_diff = y_goal - y
 
-     v = constant_speed
-     w = Kp_alpha * alpha
+    alpha = (math.atan2(y_diff, x_diff) - theta + math.pi) % (2 * math.pi) - math.pi
 
-     return v,w
+    v = 10# convert_velocity2vw(constant_speed, constant_speed,C_conv_toThymio_right, C_conv_toThymio_left, L, R)
+    w = Kp_alpha * alpha
+    return v,w
             
         
         

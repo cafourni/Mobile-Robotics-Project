@@ -229,7 +229,7 @@ def global_path(matrix):
 
     # Calling A*
     h, coords = heuristics(max_val_x, max_val_y, end)
-    path, visitedNodes = A_Star(start, end, h, coords, occupancy_grid)
+    path, visitedNodes = A_Star(start, end, h, coords, occupancy_grid, max_val_x, max_val_y)
     path = np.array(path).reshape(-1, 2).transpose()
     
     return path
