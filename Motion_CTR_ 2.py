@@ -71,7 +71,7 @@ def getB(yaw, deltak):
 
 
 ############################################################################################################################################
-def control_law(state_estimate_k, x_goal, y_goal, theta_goal,  constant_speed = 100, Kp_alpha = 2 , Kp_beta = -0.5):
+def control_law(state_estimate_k, x_goal, y_goal, theta_goal,  Kv = 30, Kp_alpha = 0.2 , Kp_beta = 0):
 
      """
      -->alpha is the angle to the goal relative to the heading of the robot
@@ -83,14 +83,23 @@ def control_law(state_estimate_k, x_goal, y_goal, theta_goal,  constant_speed = 
      x = state_estimate_k[0]
      y = state_estimate_k[1]
      theta = state_estimate_k[2]
+     theta_grad = math.degrees(theta)
 
      x_diff = x_goal - x
      y_diff = y_goal - y
 
-     alpha = (math.atan2(y_diff, x_diff) - theta + math.pi) % (2 * math.pi) - math.pi
+     angle_to_goal = math.atan2(y_diff, x_diff)
+     angle_to_goal_grad = math.degrees(angle_to_goal)
 
-     v,_ = convert_velocity2vw(constant_speed)
-     w = Kp_alpha * alpha
+     alpha_grad = (angle_to_goal_grad - theta_grad + 180) % (360) - 180
+     beta = (theta_goal - theta - math.radians(alpha_grad) + math.pi) % (2 * math.pi) - math.pi
+
+     w_grad = Kp_alpha * alpha_grad
+     w = math.radians(w_grad) + Kp_beta * beta
+
+
+     v = Kv
+    
 
      return v,w
             
