@@ -1,12 +1,18 @@
-
 import numpy as np
+
+C_conv_toThymio_right = 67.60908181
+C_conv_toThymio_left = 67.82946137
+R= 20 #[mm]
+L= 104 #[mm]
+
+
 # A matrix
 A_k_minus_1 = np.array([[1.0, 0, 0],
                         [0, 1.0, 0],
                         [0, 0, 1.0]])
 
 # Process noise
-process_noise_v_k_minus_1 = np.array([0.01, 0.01, 0.003]) #
+process_noise_v_k_minus_1 = np.array([0, 0, 0]) # zero mean noise ASSUMPTION TO BE VERIFIED
 
 # State model noise covariance matrix Q_k
 Q_k = np.array([[0.13661, 0, 0],
@@ -34,10 +40,10 @@ P_k_minus_1 = np.array([[0.1, 0, 0],
 
 ######################################################################################################################
 #Function to get B matrix
-def getB(yaw, deltak,C_conv_toThymio_right, Const_wheelL,R,L):
+def getB(yaw, deltak,C_conv_toThymio_right, C_conv_toThymio_left,R,L):
     B = np.array([[R*np.cos(yaw) * deltak/(C_conv_toThymio_right*2), R*np.cos(yaw) * deltak/(C_conv_toThymio_left*2)],
                   [R*np.sin(yaw) * deltak/(C_conv_toThymio_right*2), R*np.sin(yaw) * deltak/(C_conv_toThymio_left*2)],
-                  [R*deltak/(C_conv_toThymio_right*L), R*deltak/(C_conv_toThymio_left*L)]])
+                  [R*deltak/(C_conv_toThymio_right*L), -R*deltak/(C_conv_toThymio_left*L)]])
     return B
 ######################################################################################################################
 #Kalman Filter

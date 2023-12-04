@@ -20,7 +20,6 @@ def conversion(matrix):
 
     # Put matrix into numpy array (in case not already)
     arr = np.array(matrix)
-    print("arr in conversion:", np.shape(arr))    
     
     # Find the indices of start and goal
     start_arr = np.argwhere(arr == 2)
@@ -232,7 +231,28 @@ def global_path(matrix):
     h, coords = heuristics(max_val_x, max_val_y, end)
     path, visitedNodes = A_Star(start, end, h, coords, occupancy_grid, max_val_x, max_val_y)
     path = np.array(path).reshape(-1, 2).transpose()
+    visitedNodes = np.array(visitedNodes).reshape(-1, 2).transpose()
     
-    return path
+    return path, visitedNodes
+
+############################################################################################################################################
+
+# Display the matrix with path
+def print_path(matrix, path, visitedNodes):
+    max_val_x, max_val_y, start, end, arr = conversion(matrix)
+    cmap = colors.ListedColormap(['white', 'red'])
+    # Displaying the map
+    fig_astar, ax_astar = create_empty_plot(max_val_x, max_val_y)
+    ax_astar.imshow(arr.transpose(), cmap)
+
+    # Plot the best path found and the list of visited nodes
+    ax_astar.scatter(visitedNodes[0], visitedNodes[1], marker="o", color = 'orange')
+    ax_astar.plot(path[0], path[1], marker="o", color = 'blue')
+    ax_astar.scatter(start[0], start[1], marker="o", color = 'green', s=200)
+    ax_astar.scatter(end[0], end[1], marker="o", color = 'purple', s=200)
+    plt.title("best path in blue, visited nodes in orange")
+    plt.title("Map : free cells in white, occupied cells in red")
+    plt.show()
+    return
 
 ############################################################################################################################################

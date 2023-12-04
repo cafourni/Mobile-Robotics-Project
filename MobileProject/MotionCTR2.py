@@ -61,29 +61,16 @@ def convert_velocity2RL(v,w,C_conv_toThymio_right, C_conv_toThymio_left,L,R):
     vl=vl_rads*C_conv_toThymio_left
     return vr, vl
     
-############################################################################################################################################
-def getB(yaw, deltak):
-    B = np.array([[np.cos(yaw) * deltak, 0],
-                  [np.sin(yaw) * deltak, 0],
-                  [0, deltak]])
-    return B
-
 
 
 ############################################################################################################################################
 #def control_law(state_estimate_k, x_goal, y_goal,  Kv = 30, Kp_alpha = 0.6 , Kp_beta = 0):
 def control_law(state_estimate_k, x_goal, y_goal, speed0, speedGain):
-
-     """
-     -->alpha is the angle to the goal relative to the heading of the robot
-     -->beta is the angle between the robot's position and the goal position plus the goal angle
-     -->Kp_rho*rho and Kp_alpha*alpha drive the robot along a line towards the goal
-     -->Kp_beta*beta rotates the line so that it is parallel to the goal angle
-    
-     """
      
      orient_goal = math.atan2(y_goal - state_estimate_k[1], x_goal - state_estimate_k[0])
+     print("orient_goal", orient_goal)
      delta_angle = orient_goal - state_estimate_k[2]
+     print("delta_angle", delta_angle)
 
      if abs(delta_angle) > 0.8:
          vr = int(speedGain * delta_angle)
