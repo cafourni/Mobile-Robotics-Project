@@ -9,9 +9,9 @@ A_k_minus_1 = np.array([[1.0, 0, 0],
 process_noise_v_k_minus_1 = np.array([0.01, 0.01, 0.003]) #
 
 # State model noise covariance matrix Q_k
-Q_k = np.array([[0.13661, 0, 0],
-              [0 ,0.13661, 0],
-              [0, 0, 0.00005]])
+Q_k = np.array([[0.0013661, 0, 0],
+              [0 ,0.0013661, 0],
+              [0, 0, 0.005]])
 
 # Measurement matrix H_k
 H_k = np.array([[1.0, 0, 0],
@@ -19,9 +19,9 @@ H_k = np.array([[1.0, 0, 0],
                 [0, 0, 1.0]])
 
 # Sensor measurement noise covariance matrix R_k
-R_k= np.array([[0.001, 0, 0],
-               [0, 0.001, 0],
-               [0, 0, 0.0001]]) #TO BE CHANGED AFTER MEASUREMENTS
+R_k= np.array([[0.1, 0, 0],
+               [0, 0.1, 0],
+               [0, 0, 0.1]]) #TO BE CHANGED AFTER MEASUREMENTS
 
 # Sensor noise
 sensor_noise_w_k = np.array([0, 0, 0]) #zero mean noise
