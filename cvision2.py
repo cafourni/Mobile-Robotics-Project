@@ -256,7 +256,7 @@ class Map:
         matrix = np.zeros([2*margins+self.distance_r1r2//square_size,2*margins+self.distance_r3r2//square_size])
         # Write the obstacles positions in the matrix with a 1
         color_obstacle = cv2.imread('obstacle.jpg')
-        lower_b, upper_b = upper_lower_color(color_obstacle, 10)
+        lower_b, upper_b = upper_lower_color(color_obstacle, 1.4)
         # Find contours in the binary mask
         mask = cv2.inRange(frame, lower_b, upper_b)
         contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
@@ -266,10 +266,10 @@ class Map:
         for contour in contours:
             area = cv2.contourArea(contour)
             # Adjust the area threshold based on your specific case
-            if area > 1000:
+            if area > 50:
                 # Draw the contour on the matrix
                 cv2.drawContours(contour_matrix, [contour], -1, 0, thickness=cv2.FILLED)
-        #show_frame(contour_matrix)
+        show_frame(contour_matrix)
         max_y, max_x, _ = contour_matrix.shape
         for x in range(2*margins+self.distance_r1r2//square_size):
             for y in range(2*margins+self.distance_r3r2//square_size):
