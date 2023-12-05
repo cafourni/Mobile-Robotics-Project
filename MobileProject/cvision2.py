@@ -145,7 +145,8 @@ class Obj:
         self.img_pos = img_pos
         self.corners = ()
     
-    # Calculate the direction of the ArUc
+    # Calculate the direction of the ArUco marker from the position of the 4 corners.
+    # Return array of array, with vectors of direction of all detected objects.
     def get_img_dir(self):
         img_dir = []
         for p in range(np.size(self.corners,0)):
@@ -159,6 +160,7 @@ class Obj:
                 img_dir.append(front-back)
         return np.array(img_dir)
     
+    # Draw the centroids of the objects on a frame.
     def draw(self, frame, color):
         for p in range(np.size(self.img_pos,0)):
             if np.size(self.img_pos[p]) > 0:
@@ -185,12 +187,13 @@ class Map:
         self.e2 = (self.ref3_pos - self.ref2_pos)/np.linalg.norm(self.ref3_pos - self.ref2_pos)
         self.scale = np.array([distance_r1r2/np.linalg.norm(self.ref1_pos - self.ref2_pos), distance_r3r2/np.linalg.norm(self.ref3_pos - self.ref2_pos)])
     
+    # Check that all the three references needed to use the map are detected.
     def references_detected(self):
         if (np.size(self.ref1.img_pos,0) > 0) and (np.size(self.ref2.img_pos,0) > 0) and (np.size(self.ref3.img_pos,0) > 0):
-            # The three references needed to use the map are detected on the image.
             return True
         else:
             return False
+    
     # Convert image coordinates (in pixels) to map coordinates
     def loc_img2map(self, img_coordinates):
         if np.size(img_coordinates) > 1:
@@ -245,16 +248,18 @@ class Map:
     
     # 
     def localize(self, obj):
-        img_coordinates = obj.img_pos
-        map_pos = []
-        for o in range(np.size(img_coordinates,0)):
-            map_pos.append(self.loc_img2map(img_coordinates[o]))
-        return np.array(map_pos)
+        img_position = obj.img_pos
+        map_position = []
+        for o in range(np.size(img_position,0)):
+            map_position.append(self.loc_img2map(img_position[o]))
+        return np.array(map_position)
     
+    # Give the map in a matrix format with the given objects represented as numbers
     def matrix(self, frame, robot, goal):
-        # Print the map in a matrix format with the given objects represented as numbers
+        # Matrix cell real size
         square_size = 10 #[mm]
         margins = 0
+        # Position of the origin of the map in the matrix
         origin = np.array([margins, margins])
         matrix = np.zeros([2*margins+self.distance_r1r2//square_size,2*margins+self.distance_r3r2//square_size])
         # Write the obstacles positions in the matrix with a 1
