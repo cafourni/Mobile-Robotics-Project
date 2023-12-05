@@ -5,9 +5,9 @@ obstThrH = 2000
 spRight = 0
 spLeft = 0
 speed_L_R = [0,0]
-#obstSpeedGain = [4, 6, -15, -6, -4] #version de Gab
-obstSpeedGain =  [1, 3, -15, -6, -2] #version le cours
-speed0 = 100
+#obstSpeedGain = [6, 8, -15, -8, -6] #version de Gab
+obstSpeedGain =  [4, 2, -15, -4, -6] #version le cours
+speed0 = 50
 
 
 ############################################################################################################################################
@@ -31,7 +31,6 @@ def update_state(state,obst,client):
                     if obst[3] < obstThrL:
                         if obst[4] < obstThrL:
                             state = 1
-    print("THE STATE IS : ", state)
     return state
     
 ############################################################################################################################################    
@@ -40,8 +39,8 @@ def local_navigation(obst):
     spLeft = speed0
     spRight = speed0
     for i in range(5):
-        spLeft += obst[i] * obstSpeedGain[i] // 300
-        spRight += obst[i] * obstSpeedGain[4 - i] // 300
+        spLeft += obst[i] * obstSpeedGain[i] // 100
+        spRight += obst[i] * obstSpeedGain[4 - i] // 100
     speed_L_R = [spLeft,spRight]
     return speed_L_R
 
