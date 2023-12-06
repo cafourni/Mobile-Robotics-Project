@@ -90,7 +90,7 @@ def grow_obstacles(matrix, growth_size):
         # Setting the corresponding elements to 1 in expanded matrix
         expanded_matrix[row_range, col_range] = 1
 
-    return expanded_matrix
+    return expanded_matrix, obstacle_indices
 
 ############################################################################################################################################
 
@@ -224,8 +224,8 @@ def global_path(matrix):
     max_val_x, max_val_y, start, end, original_grid = conversion(matrix)
 
     # Grow the obstacles in the matrix
-    growth_size = 0 # size of robot radius (in grid dimension) (would be 5.5cm)
-    occupancy_grid = grow_obstacles(original_grid, growth_size)
+    growth_size = 7 # size of robot radius (in grid dimension) (would be 5.5cm)
+    occupancy_grid, obstacle_indices = grow_obstacles(original_grid, growth_size)
 
     # Calling A*
     h, coords = heuristics(max_val_x, max_val_y, end)
@@ -233,20 +233,21 @@ def global_path(matrix):
     path = np.array(path).reshape(-1, 2).transpose()
     visitedNodes = np.array(visitedNodes).reshape(-1, 2).transpose()
     
-    return path, visitedNodes
+    return path, visitedNodes, occupancy_grid, obstacle_indices
 
 ############################################################################################################################################
 
 # Display the matrix with path
-def print_path(matrix, path, visitedNodes):
+def print_path(matrix, path, visitedNodes, occupancy_grid, obstacle_indices):
     max_val_x, max_val_y, start, end, arr = conversion(matrix)
-    cmap = colors.ListedColormap(['white', 'red'])
+    cmap = colors.ListedColormap(['white', 'orange'])
     # Displaying the map
     fig_astar, ax_astar = create_empty_plot(max_val_x, max_val_y)
-    ax_astar.imshow(arr.transpose(), cmap)
+    ax_astar.imshow(occupancy_grid.transpose(), cmap)
 
     # Plot the best path found and the list of visited nodes
-    ax_astar.scatter(visitedNodes[0], visitedNodes[1], marker="o", color = 'orange')
+    ax_astar.scatter(obstacle_indices[0], obstacle_indices[1], marker="o", color = 'red')
+    ax_astar.scatter(visitedNodes[0], visitedNodes[1], marker="o", color = 'cyan')
     ax_astar.plot(path[0], path[1], marker="o", color = 'blue')
     ax_astar.scatter(start[0], start[1], marker="o", color = 'green', s=200)
     ax_astar.scatter(end[0], end[1], marker="o", color = 'purple', s=200)
