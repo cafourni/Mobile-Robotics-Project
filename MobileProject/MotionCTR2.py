@@ -5,8 +5,8 @@ from tdmclient import ClientAsync, aw
 
 
 #Conversion coefficients from Thymio to radians per second
-C_conv_toThymio_right = 67.60908181
-C_conv_toThymio_left = 67.82946137
+C_conv_toThymio_right = 55.60908181
+C_conv_toThymio_left = 55.82946137
 
 threshold_for_convergence = 50 #mm
 L = 95 #[mm]
@@ -67,12 +67,12 @@ def convert_velocity2RL(v,w,C_conv_toThymio_right, C_conv_toThymio_left,L,R):
 #def control_law(state_estimate_k, x_goal, y_goal,  Kv = 30, Kp_alpha = 0.6 , Kp_beta = 0):
 def control_law(state_estimate_k, x_goal, y_goal, speed0, speedGain):
      
-     orient_goal = math.atan2(y_goal - state_estimate_k[1], x_goal - state_estimate_k[0])
+     orient_goal = (math.atan2(y_goal - state_estimate_k[1], x_goal - state_estimate_k[0]) + math.pi ) % (2 * math.pi) - math.pi
      print("orient_goal", orient_goal)
      delta_angle = orient_goal - state_estimate_k[2]
      print("delta_angle", delta_angle)
 
-     if abs(delta_angle) > 0.8:
+     if delta_angle > 0.8:
          vr = int(speedGain * delta_angle)
          vl = int(-speedGain * delta_angle)
      else:

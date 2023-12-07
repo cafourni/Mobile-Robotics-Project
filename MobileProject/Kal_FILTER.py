@@ -1,7 +1,7 @@
 import numpy as np
 
-C_conv_toThymio_right = 67.60908181
-C_conv_toThymio_left = 67.82946137
+C_conv_toThymio_right = 55.60908181
+C_conv_toThymio_left = 55.82946137
 R= 23 #[mm]
 L= 95 #[mm]
 
@@ -17,7 +17,7 @@ process_noise_v_k_minus_1 = np.array([0, 0, 0]) # zero mean noise ASSUMPTION TO 
 # State model noise covariance matrix Q_k
 Q_k = np.array([[1.3661, 0, 0],
               [0 ,1.3661, 0],
-              [0, 0, 0.5]])
+              [0, 0, 0.0005]])
 
 # Measurement matrix H_k
 H_k = np.array([[1.0, 0, 0],
@@ -55,11 +55,11 @@ def ekf(z_k_observation_vector, state_estimate_k_minus_1,
     state_estimate_k_priori = A_k_minus_1 @ state_estimate_k_minus_1 + \
                               getB(state_estimate_k_minus_1[2], dk, C_conv_toThymio_right, C_conv_toThymio_left,R, L) @ control_vector_k_minus_1 + \
                               process_noise_v_k_minus_1
-    state_estimate_k_priori[2] = np.mod(state_estimate_k_priori[2], 2*np.pi)    
+    state_estimate_k_priori[2] = state_estimate_k_priori[2] 
              
     # Predict state covariance
     P_k = A_k_minus_1 @ P_k_minus_1 @ A_k_minus_1.T + Q_k
-         
+    print("P_k", P_k)
     # MEASUREMENT residual
     measurement_residual_y_k = z_k_observation_vector - (H_k @ state_estimate_k_priori + sensor_noise_w_k)
              
